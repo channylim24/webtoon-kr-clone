@@ -19,13 +19,13 @@ function Home() {
 
   useEffect(() => {
     dispatch(retrieveWebtoons());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (webtoons) {
       setIsLoading(getWebtoons.isLoading);
     }
-  }, [webtoons]);
+  }, [webtoons, getWebtoons.isLoading]);
 
   useEffect(() => {
     setSliderWidth(slider.current.offsetWidth - slider.current.scrollWidth);
