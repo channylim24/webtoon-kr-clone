@@ -1,0 +1,20 @@
+%container {
+  width: 96%;
+  margin: 0 auto;
+}
+
+$primary-color: #00d564;
+$secondary-color: #a2a2a2;
+$danger-color: #ff3a3a;
+$dark-color: #131313;
+$light-color: #eef5f0;
+
+$font-12: 12px;
+$font-14: 14px;
+$font-16: 16px;
+$font-20: 20px;
+
+// Media Queries
+$small-phone: 281px;
+$phone: 376px;
+$large-phone: 496px;

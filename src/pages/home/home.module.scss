@@ -1,0 +1,65 @@
+@import "../../base";
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400&display=swap");
+
+.container {
+  @extend %container;
+  overflow-x: hidden;
+
+  & > * {
+    margin-bottom: 10px;
+  }
+}
+
+.home {
+  background-color: #000000;
+  color: $light-color;
+  font-size: $font-14;
+  padding: 12px 0;
+
+  & > * {
+    margin-bottom: 2rem;
+  }
+
+  &__heading {
+    font-size: $font-16;
+  }
+
+  &__slide__container {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &__slider {
+    display: flex;
+    gap: 1rem;
+    max-width: fit-content;
+    overflow-y: visible;
+  }
+
+  &__rank {
+    color: $secondary-color;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    gap: 1rem;
+
+    &__filter {
+      cursor: pointer;
+      transition-duration: 0.25s;
+      white-space: nowrap;
+
+      &:hover {
+        color: $light-color;
+      }
+    }
+
+    &__list__container > * {
+      border-bottom: 1px solid #ffffff57;
+      padding: 1rem 0;
+    }
+  }
+}
