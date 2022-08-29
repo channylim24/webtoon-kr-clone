@@ -10,8 +10,12 @@ import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
 import WebtoonChoicesSkeleton from "../../components/webtoon-choices-skeleton/WebtoonChoicesSkeleton";
 
 function Home() {
-  const slider = useRef();
-  const [sliderWidth, setSliderWidth] = useState(0);
+  const slider1 = useRef();
+  const slider2 = useRef();
+  const slider3 = useRef();
+  const [sliderWidth1, setSliderWidth1] = useState(0);
+  const [sliderWidth2, setSliderWidth2] = useState(0);
+  const [sliderWidth3, setSliderWidth3] = useState(0);
   const getWebtoons = useSelector((state) => state.webtoons);
   const webtoons = getWebtoons.data;
   const dispatch = useDispatch();
@@ -28,8 +32,10 @@ function Home() {
   }, [webtoons, getWebtoons.isLoading]);
 
   useEffect(() => {
-    setSliderWidth(slider.current.offsetWidth - slider.current.scrollWidth);
-  }, [sliderWidth, webtoons]);
+    setSliderWidth1(slider1.current.offsetWidth - slider1.current.scrollWidth);
+    setSliderWidth2(slider2.current.offsetWidth - slider2.current.scrollWidth);
+    setSliderWidth3(slider3.current.offsetWidth - slider3.current.scrollWidth);
+  }, [sliderWidth1, sliderWidth2, sliderWidth3, webtoons]);
 
   return (
     <main className={style.home}>
@@ -38,9 +44,9 @@ function Home() {
         <div className={style.home__slide__container}>
           <motion.div
             drag="x"
-            dragConstraints={{ right: 0, left: sliderWidth }}
+            dragConstraints={{ right: 0, left: sliderWidth1 }}
             className={style.home__slider}
-            ref={slider}
+            ref={slider1}
           >
             {isLoading && <CardSkeleton cards={8} />}
 
@@ -94,9 +100,9 @@ function Home() {
         <div className={style.home__slide__container}>
           <motion.div
             drag="x"
-            dragConstraints={{ right: 0, left: sliderWidth }}
+            dragConstraints={{ right: 0, left: sliderWidth2 }}
             className={style.home__slider}
-            ref={slider}
+            ref={slider2}
           >
             {isLoading && <CardSkeleton cards={8} />}
             {webtoons
@@ -123,9 +129,9 @@ function Home() {
         <div className={style.home__slide__container}>
           <motion.div
             drag="x"
-            dragConstraints={{ right: 0, left: sliderWidth }}
+            dragConstraints={{ right: 0, left: sliderWidth3 }}
             className={style.home__slider}
-            ref={slider}
+            ref={slider3}
           >
             {isLoading && <CardSkeleton cards={8} />}
             {webtoons &&
