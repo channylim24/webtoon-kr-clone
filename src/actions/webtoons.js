@@ -1,4 +1,7 @@
-import { RETRIEVE_WEBTOONS, SEARCH_WEBTOONS } from "./types";
+import {
+  RETRIEVE_WEBTOONS,
+  // , SEARCH_WEBTOONS
+} from "./types";
 import WebtoonsService from "../services/WebtoonsService";
 
 export const retrieveWebtoons = (slug) => async (dispatch) => {

@@ -1,13 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import style from "./weekday.module.scss";
 import Card from "../../components/card/Card";
-import WebtoonChoices from "../../components/webtoon-choices/WebtoonChoices";
+// import WebtoonChoices from "../../components/webtoon-choices/WebtoonChoices";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { retrieveWebtoons, searchWebtoons } from "../../actions/webtoons";
+import {
+  retrieveWebtoons,
+  // , searchWebtoons
+} from "../../actions/webtoons";
 import "react-loading-skeleton/dist/skeleton.css";
 import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
 function Weekday() {
   const getWebtoons = useSelector((state) => state.webtoons);
@@ -16,7 +19,7 @@ function Weekday() {
   const [isLoading, setIsLoading] = useState(true);
   let days = ["월", "화", "수", "목", "금", "토", "일", "매일+"];
   const [today, setToday] = useState("");
-  const { state } = useLocation();
+  // const { state } = useLocation();
 
   useEffect(() => {
     dispatch(retrieveWebtoons());
@@ -55,7 +58,7 @@ function Weekday() {
         setToday(6);
         break;
     }
-  }, []);
+  }, [dispatch]);
 
   // useEffect(() => {
   //   console.log(state);
@@ -67,7 +70,7 @@ function Weekday() {
     if (webtoons) {
       setIsLoading(getWebtoons.isLoading);
     }
-  }, [webtoons]);
+  }, [webtoons, getWebtoons.isLoading]);
 
   return (
     <main>

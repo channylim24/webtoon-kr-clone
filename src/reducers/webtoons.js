@@ -1,4 +1,7 @@
-import { RETRIEVE_WEBTOONS, SEARCH_WEBTOONS } from "../actions/types";
+import {
+  RETRIEVE_WEBTOONS,
+  // , SEARCH_WEBTOONS
+} from "../actions/types";
 
 const initialState = [];
 

@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SiNaver } from "react-icons/si";
 import { FiSearch } from "react-icons/fi";
 import style from "./navbar.module.scss";
-import { retrieveWebtoons } from "../../actions/webtoons";
-import { useDispatch } from "react-redux";
+// import { retrieveWebtoons } from "../../actions/webtoons";
+// import { useDispatch } from "react-redux";
 
 function Navbar() {
   const location = useLocation();
