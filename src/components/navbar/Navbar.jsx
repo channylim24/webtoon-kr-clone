@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SiNaver } from "react-icons/si";
 import { FiSearch } from "react-icons/fi";
 import style from "./navbar.module.scss";
 // import { retrieveWebtoons } from "../../actions/webtoons";
-// import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 function Navbar() {
   const location = useLocation();
@@ -13,15 +13,20 @@ function Navbar() {
   const navigate = useNavigate();
 
   const search = (e) => {
-    if (e.keyCode === 13) {
-      // return searchItem;
-      // dispatch(retrieveWebtoons(`/search?keyword=${searchItem}`));
-      navigate(
-        "/webtoon/weekday"
-        // , { state: `${searchItem}` }
-      );
-    }
+    // if (e.keyCode === 13) {
+    // return searchItem;
+    // dispatch(retrieveWebtoons(`${searchItem}`));
+    navigate("/webtoon/weekday", {
+      state: `${searchItem}`,
+    });
+    // }
   };
+
+  // useEffect(() => {
+  //   return () => {
+  //     searchItem = null;
+  //   };
+  // }, []);
 
   return (
     <header className={style.header}>
@@ -36,13 +41,13 @@ function Navbar() {
                 <li>웹툰</li>
               </Link>
               <span className={style.header__vertbar}>&#124;</span>
-              <Link to="/" className={style.header__top__left__link}>
+              {/* <Link to="/" className={style.header__top__left__link}>
                 <li>웹소설</li>
               </Link>
               <span className={style.header__vertbar}>&#124;</span>
               <Link to="/" className={style.header__top__left__link}>
                 <li>시리즈</li>
-              </Link>
+              </Link> */}
             </ul>
           </div>
           <div className={style.header__top__right}>
@@ -104,12 +109,12 @@ function Navbar() {
           >
             요일별
           </Link>
-          <Link to="/" className={style.header__bottom__link}>
+          {/* <Link to="/" className={style.header__bottom__link}>
             완결작
           </Link>
           <Link to="/" className={style.header__bottom__link}>
             베스트도전
-          </Link>
+          </Link> */}
         </nav>
       </div>
     </header>

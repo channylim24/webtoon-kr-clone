@@ -1,17 +1,17 @@
 import {
-  RETRIEVE_WEBTOONS,
+  RETRIEVE_TODAY_WEBTOONS,
   // , SEARCH_WEBTOONS
 } from "../actions/types";
 
 const initialState = [];
 
-const webtoonReducer = (webtoons = initialState, action) => {
+const todayWebtoonReducer = (todayWebtoons = initialState, action) => {
   const { type, payload, isLoading } = action;
   switch (type) {
-    case RETRIEVE_WEBTOONS:
+    case RETRIEVE_TODAY_WEBTOONS:
       return { data: payload.webtoons, isLoading };
     default:
-      return webtoons;
+      return todayWebtoons;
   }
 };
 
@@ -25,4 +25,4 @@ const webtoonReducer = (webtoons = initialState, action) => {
 //   }
 // };
 
-export default webtoonReducer;
+export default todayWebtoonReducer;

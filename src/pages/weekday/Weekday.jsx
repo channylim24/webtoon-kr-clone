@@ -2,97 +2,120 @@ import React, { useState, useEffect } from "react";
 import style from "./weekday.module.scss";
 import Card from "../../components/card/Card";
 // import WebtoonChoices from "../../components/webtoon-choices/WebtoonChoices";
-import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  retrieveWebtoons,
-  // , searchWebtoons
-} from "../../actions/webtoons";
+import { retrieveTodayWebtoons, searchWebtoons } from "../../actions/webtoons";
 import "react-loading-skeleton/dist/skeleton.css";
 import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
-// import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Weekday() {
-  const getWebtoons = useSelector((state) => state.webtoons);
-  const webtoons = getWebtoons.data;
+  const getTodayWebtoons = useSelector((state) => state.todayWebtoons);
+  const getSearchedWebtoons = useSelector((state) => state.searchWebtoons);
+  let webtoons = getTodayWebtoons.data;
+  let searchedWebtoons = getSearchedWebtoons.data;
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
-  let days = ["월", "화", "수", "목", "금", "토", "일", "매일+"];
-  const [today, setToday] = useState("");
-  // const { state } = useLocation();
+  console.log(searchedWebtoons);
+  function convertTZ(date, tzString) {
+    return new Date(
+      (typeof date === "string" ? new Date(date) : date).toLocaleString(
+        "en-US",
+        { timeZone: tzString }
+      )
+    );
+  }
+  const date = new Date();
+  const localDay = convertTZ(date, "Asia/Jakarta");
+
+  const [today, setToday] = useState(
+    String(localDay).slice(0, 3).toLowerCase()
+  );
+
+  let daysDict = {
+    월: "mon",
+    화: "tue",
+    수: "wed",
+    목: "thu",
+    금: "fri",
+    토: "sat",
+    일: "sun",
+    완결: "finished",
+    "네이버 Daily+": "naverDaily",
+  };
+  let days = Object.keys(daysDict);
+
+  let { state, pathname } = useLocation();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(retrieveWebtoons());
-    function convertTZ(date, tzString) {
-      return new Date(
-        (typeof date === "string" ? new Date(date) : date).toLocaleString(
-          "en-US",
-          { timeZone: tzString }
-        )
-      );
-    }
-
-    const date = new Date();
-    const localDay = convertTZ(date, "Asia/Jakarta");
-
-    switch (String(localDay).slice(0, 3)) {
-      case "Mon":
-        setToday(0);
-        break;
-      case "Tue":
-        setToday(1);
-        break;
-      case "Wed":
-        setToday(2);
-        break;
-      case "Thu":
-        setToday(3);
-        break;
-      case "Fri":
-        setToday(4);
-        break;
-      case "Sat":
-        setToday(5);
-        break;
-      case "Sun":
-        setToday(6);
-        break;
-    }
+    dispatch(retrieveTodayWebtoons(`&updateDay=${today}&perPage=100`));
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   console.log(state);
-  //   dispatch(searchWebtoons(state));
-  //   // setToday("");
-  // }, [state]);
+  const handleFetchWebtoon = (e) => {
+    setToday(daysDict[`${e.target.innerHTML}`]);
+    setIsLoading(true);
+  };
+  useEffect(() => {
+    dispatch(retrieveTodayWebtoons(`&updateDay=${today}&perPage=100`));
+  }, [dispatch, today, isLoading]);
+
+  useEffect(() => {
+    dispatch(searchWebtoons(state));
+
+    return () => {
+      state = "";
+    };
+  }, [webtoons, state]);
 
   useEffect(() => {
     if (webtoons) {
-      setIsLoading(getWebtoons.isLoading);
+      setIsLoading(getTodayWebtoons.isLoading);
+    } else {
+      setIsLoading(true);
     }
-  }, [webtoons, getWebtoons.isLoading]);
+  }, [webtoons, getTodayWebtoons.isLoading]);
 
   return (
     <main>
-      <div className={style.daylist}>
-        <ul className={`${style.daylist__filter} ${style.container}`}>
-          {days.map((day, index) => (
-            <li
-              onClick={() => setToday(index)}
-              className={index === today ? style.on : ""}
-              key={index}
-            >
-              {day}
-            </li>
-          ))}
+      {state ? (
+        <ul className={style.webtoonlist}>
+          {isLoading && <CardSkeleton cards={20} />}
+          {searchedWebtoons &&
+            searchedWebtoons.map((webtoon, index) => (
+              <div key={index}>
+                <li>
+                  <Card
+                    thumbnail={webtoon.img}
+                    title={webtoon.title}
+                    author={webtoon.author}
+                    url={webtoon.url}
+                  />
+                </li>
+              </div>
+            ))}
         </ul>
-      </div>
-      <ul className={style.webtoonlist}>
-        {isLoading && <CardSkeleton cards={20} />}
-        {webtoons
-          ? webtoons.map((webtoon, index) =>
-              webtoon.week[0] === today ? (
-                <motion.div key={index}>
+      ) : (
+        <>
+          <div className={style.daylist}>
+            <ul className={`${style.daylist__filter} ${style.container}`}>
+              {days.map((day, index) => (
+                <li
+                  onClick={(e) => handleFetchWebtoon(e)}
+                  className={today === daysDict[day] ? style.on : ""}
+                  key={index}
+                >
+                  {day}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <ul className={style.webtoonlist}>
+            {isLoading && <CardSkeleton cards={20} />}
+            {webtoons &&
+              webtoons.map((webtoon, index) => (
+                <div key={index}>
                   <li>
                     <Card
                       thumbnail={webtoon.img}
@@ -101,13 +124,11 @@ function Weekday() {
                       url={webtoon.url}
                     />
                   </li>
-                </motion.div>
-              ) : (
-                ""
-              )
-            )
-          : ""}
-      </ul>
+                </div>
+              ))}
+          </ul>
+        </>
+      )}
     </main>
   );
 }

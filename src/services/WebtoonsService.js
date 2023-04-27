@@ -1,15 +1,21 @@
 import http from "../http-common";
 
 const getAllWebtoons = (slug) => {
-  return http.get("/naver");
+  return http.get("/?service=naver");
 };
 
-// const getSearchWebtoons = (slug) => {
-//   // return http.get(slug ? `/search?keyword=${slug}` : "/naver");
-//   return http.get(slug ?? "");
-// };
+const getTodayWebtoons = (slug) => {
+  return http.get(`/?service=naver${slug}`);
+};
+
+const getSearchWebtoons = (slug) => {
+  // return http.get(slug ? `/search?keyword=${slug}` : "/naver");
+  return http.get(`/search?keyword=${slug}`);
+};
 
 const WebtoonsService = {
   getAllWebtoons,
+  getTodayWebtoons,
+  getSearchWebtoons,
 };
 export default WebtoonsService;

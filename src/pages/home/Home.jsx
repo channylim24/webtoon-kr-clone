@@ -4,26 +4,53 @@ import Card from "../../components/card/Card";
 import WebtoonChoices from "../../components/webtoon-choices/WebtoonChoices";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { retrieveWebtoons } from "../../actions/webtoons";
+import {
+  retrieveWebtoons,
+  retrieveTodayWebtoons,
+} from "../../actions/webtoons";
 import "react-loading-skeleton/dist/skeleton.css";
 import CardSkeleton from "../../components/cardSkeleton/CardSkeleton";
 import WebtoonChoicesSkeleton from "../../components/webtoon-choices-skeleton/WebtoonChoicesSkeleton";
 
 function Home() {
+  // Get date
+  function convertTZ(date, tzString) {
+    return new Date(
+      (typeof date === "string" ? new Date(date) : date).toLocaleString(
+        "en-US",
+        { timeZone: tzString }
+      )
+    );
+  }
+
+  const date = new Date();
+  const localDay = convertTZ(date, "Asia/Jakarta");
+  let today = String(localDay).slice(0, 3).toLowerCase();
+
+  // Motion Framer
   const slider1 = useRef();
   const slider2 = useRef();
-  const slider3 = useRef();
   const [sliderWidth1, setSliderWidth1] = useState(0);
   const [sliderWidth2, setSliderWidth2] = useState(0);
-  const [sliderWidth3, setSliderWidth3] = useState(0);
+
+  // Fetch API
   const getWebtoons = useSelector((state) => state.webtoons);
+  const getTodayWebtoons = useSelector((state) => state.todayWebtoons);
   const webtoons = getWebtoons.data;
+  let todayWebtoons = getTodayWebtoons.data;
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     dispatch(retrieveWebtoons());
+    dispatch(retrieveTodayWebtoons(`&updateDay=${today}`));
   }, [dispatch]);
+
+  let favWebtoons = webtoons
+    ? [...webtoons].sort(function (a, b) {
+        return a.fanCount - b.fanCount;
+      })
+    : "";
 
   useEffect(() => {
     if (webtoons) {
@@ -31,11 +58,11 @@ function Home() {
     }
   }, [webtoons, getWebtoons.isLoading]);
 
+  // Slider
   useEffect(() => {
     setSliderWidth1(slider1.current.offsetWidth - slider1.current.scrollWidth);
     setSliderWidth2(slider2.current.offsetWidth - slider2.current.scrollWidth);
-    setSliderWidth3(slider3.current.offsetWidth - slider3.current.scrollWidth);
-  }, [sliderWidth1, sliderWidth2, sliderWidth3, webtoons]);
+  }, [sliderWidth1, sliderWidth2, webtoons, todayWebtoons]);
 
   return (
     <main className={style.home}>
@@ -51,20 +78,16 @@ function Home() {
             {isLoading && <CardSkeleton cards={8} />}
 
             {webtoons &&
-              webtoons.map((webtoon, index) =>
-                webtoon.week[0] === 3 ? (
-                  <motion.div key={index}>
-                    <Card
-                      thumbnail={webtoon.img}
-                      title={webtoon.title}
-                      author={webtoon.author}
-                      url={webtoon.url}
-                    />
-                  </motion.div>
-                ) : (
-                  ""
-                )
-              )}
+              webtoons.map((webtoon, index) => (
+                <motion.div key={index}>
+                  <Card
+                    thumbnail={webtoon.img}
+                    title={webtoon.title}
+                    author={webtoon.author}
+                    url={webtoon.url}
+                  />
+                </motion.div>
+              ))}
           </motion.div>
         </div>
       </section>
@@ -80,8 +103,10 @@ function Home() {
         </ul>
         <dl className={style.home__rank__list__container}>
           {isLoading && <WebtoonChoicesSkeleton cards={8} />}
+
           {webtoons &&
-            webtoons
+            favWebtoons
+              .reverse()
               .slice(0, 5)
               .map((webtoon, index) => (
                 <WebtoonChoices
@@ -96,7 +121,7 @@ function Home() {
         </dl>
       </section>
       <section className={style.container}>
-        <h2 className={style.home__heading}>휘몰아치는 전개</h2>
+        <h2 className={style.home__heading}>오늘의 웹툰</h2>
         <div className={style.home__slide__container}>
           <motion.div
             drag="x"
@@ -105,50 +130,18 @@ function Home() {
             ref={slider2}
           >
             {isLoading && <CardSkeleton cards={8} />}
-            {webtoons
-              ? webtoons.map((webtoon, index) =>
-                  webtoon.week[0] === 2 ? (
-                    <motion.div key={index}>
-                      <Card
-                        thumbnail={webtoon.img}
-                        title={webtoon.title}
-                        author={webtoon.author}
-                        url={webtoon.url}
-                      />
-                    </motion.div>
-                  ) : (
-                    ""
-                  )
-                )
-              : ""}
-          </motion.div>
-        </div>
-      </section>
-      <section className={style.container}>
-        <h2 className={style.home__heading}>소설도 읽고 웹툰도 보고</h2>
-        <div className={style.home__slide__container}>
-          <motion.div
-            drag="x"
-            dragConstraints={{ right: 0, left: sliderWidth3 }}
-            className={style.home__slider}
-            ref={slider3}
-          >
-            {isLoading && <CardSkeleton cards={8} />}
-            {webtoons &&
-              webtoons.map((webtoon, index) =>
-                webtoon.week[0] === 1 ? (
-                  <motion.div key={index}>
-                    <Card
-                      thumbnail={webtoon.img}
-                      title={webtoon.title}
-                      author={webtoon.author}
-                      url={webtoon.url}
-                    />
-                  </motion.div>
-                ) : (
-                  ""
-                )
-              )}
+
+            {todayWebtoons &&
+              todayWebtoons.map((webtoon, index) => (
+                <motion.div key={index}>
+                  <Card
+                    thumbnail={webtoon.img}
+                    title={webtoon.title}
+                    author={webtoon.author}
+                    url={webtoon.url}
+                  />
+                </motion.div>
+              ))}
           </motion.div>
         </div>
       </section>
